@@ -1,4 +1,4 @@
-from __future__ import with_statement
+
 
 import re
 
@@ -16,12 +16,12 @@ from markitup import settings
 from markitup.templatetags.markitup_tags import _get_markitup_context
 from markitup.widgets import MarkItUpWidget, MarkupTextarea, AdminMarkItUpWidget
 
-from models import Post, AbstractParent, CallableDefault
+from .models import Post, AbstractParent, CallableDefault
 
 
 
 def test_filter(text, **kwargs):
-    return unicode(text) + unicode(kwargs)
+    return str(text) + str(kwargs)
 
 
 
@@ -36,8 +36,8 @@ class MarkupFieldTests(TestCase):
 
 
     def testUnicodeRender(self):
-        self.assertEquals(unicode(self.post.body),
-                          u'replacement text')
+        self.assertEquals(str(self.post.body),
+                          'replacement text')
 
     def testLength(self):
         self.assertEquals(len(self.post.body), 16)
@@ -53,7 +53,7 @@ class MarkupFieldTests(TestCase):
 
     def testRendered(self):
         self.assertEquals(self.post.body.rendered,
-                          u'replacement text')
+                          'replacement text')
 
 
     def testLoadBack(self):
@@ -65,15 +65,15 @@ class MarkupFieldTests(TestCase):
     def testAssignToBody(self):
         self.post.body = 'replace this other text'
         self.post.save()
-        self.assertEquals(unicode(self.post.body),
-                          u'replacement other text')
+        self.assertEquals(str(self.post.body),
+                          'replacement other text')
 
 
     def testAssignToRaw(self):
         self.post.body.raw = 'new text, replace this'
         self.post.save()
-        self.assertEquals(unicode(self.post.body),
-                          u'new text, replacement')
+        self.assertEquals(str(self.post.body),
+                          'new text, replacement')
 
 
     def testAssignToRendered(self):
@@ -151,8 +151,8 @@ class MarkupFieldFormTests(TestCase):
 
     def testFormFieldContents(self):
         form = self.form_class(instance=self.post)
-        self.assertEquals(unicode(form['body']),
-                          u'<textarea id="id_body" rows="10" cols="40" name="body">**markdown**</textarea>')
+        self.assertEquals(str(form['body']),
+                          '<textarea id="id_body" rows="10" cols="40" name="body">**markdown**</textarea>')
 
 
     def testAdminFormField(self):
@@ -171,12 +171,12 @@ class HiddenFieldFormTests(TestCase):
 
     def testHiddenFieldContents(self):
         form = self.form_class(instance=self.post)
-        self.assertEquals(unicode(form['body']), (
-            u'<textarea id="id_body" rows="10" cols="40" name="body">'
-            u'[link](http://example.com) &amp; &quot;text&quot;'
-            u'</textarea><input type="hidden" name="initial-body" value="'
-            u'[link](http://example.com) &amp; &quot;text&quot;" '
-            u'id="initial-id_body" />'
+        self.assertEquals(str(form['body']), (
+            '<textarea id="id_body" rows="10" cols="40" name="body">'
+            '[link](http://example.com) &amp; &quot;text&quot;'
+            '</textarea><input type="hidden" name="initial-body" value="'
+            '[link](http://example.com) &amp; &quot;text&quot;" '
+            'id="initial-id_body" />'
         ))
 
 
@@ -475,7 +475,7 @@ class SouthFreezingTests(TestCase):
 
     @skipUnless(introspector, "South not available")
     def test_no_rendered_field_works(self):
-        from models import NoRendered
+        from .models import NoRendered
         self.assertRaises(FieldDoesNotExist,
                           NoRendered._meta.get_field,
                           '_body_rendered')

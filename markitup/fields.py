@@ -15,10 +15,10 @@ def _get_render_func(dotted_path, **kwargs):
 try:
     render_func = _get_render_func(settings.MARKITUP_FILTER[0],
                                    **settings.MARKITUP_FILTER[1])
-except ImportError, e:
+except ImportError as e:
     raise ImproperlyConfigured("Could not import MARKITUP_FILTER %s: %s" %
                                (settings.MARKITUP_FILTER, e))
-except AttributeError, e:
+except AttributeError as e:
     raise ImproperlyConfigured("MARKITUP_FILTER setting is required")
 
 class Markup(SafeData):
